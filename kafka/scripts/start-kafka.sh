@@ -14,6 +14,8 @@ if [ ! -z "$HELIOS_PORT_kafka" ]; then
     ADVERTISED_PORT=`echo $HELIOS_PORT_kafka | cut -d':' -f 2`
 fi
 
+export KAFKA_PORT=$ADVERTISED_PORT;
+
 # Set the external host and port
 if [ -z "$ADVERTISED_HOST" ]; then
     ADVERTISED_HOST=`route -n | awk '/UG[ \t]/{print $2}'`
@@ -24,7 +26,7 @@ if [ ! -z "$ADVERTISED_HOST" ]; then
     if grep -q "^advertised.host.name" $KAFKA_HOME/config/server.properties; then
         sed -r -i "s/#(advertised.host.name)=(.*)/\1=$ADVERTISED_HOST/g" $KAFKA_HOME/config/server.properties
     else
-        echo "advertised.host.name=$ADVERTISED_HOST" >> $KAFKA_HOME/config/server.properties
+        echo "\nadvertised.host.name=$ADVERTISED_HOST" >> $KAFKA_HOME/config/server.properties
     fi
 fi
 
